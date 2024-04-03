@@ -7,3 +7,17 @@ def test_google_news_parser():
     parser = GoogleNewsParser(ExampleHtmlSnippet.article_tag)
     stories_result = list(parser.get_stories())
     assert stories_result[0] == TEST_GET_STORIES_RESPONSE
+
+def test_google_news_parser_no_stories():
+    parser = GoogleNewsParser('')
+    paragraphs_result = list(parser.get_stories())
+    assert paragraphs_result == []
+
+def test_google_news_parser_none():
+    paragraphs_result = []
+    try:
+        parser = GoogleNewsParser(None)
+        paragraphs_result = list(parser.get_stories())
+        assert False
+    except:
+        assert paragraphs_result == []

@@ -5,6 +5,6 @@ _Mnemo_ is a python API that fetches real-world data about any given public figu
 
 This service leverages a Python library for grabbing snippets of search data (from several sources) and creating a journal "entry" from a first-person perspective based on current events (pertaining to the figure) as well as historical information about the public figure.
 
-The service is created using FastAPI and will rely on a ChatGPT Python client to create the contextual thought.
+The service was created with a Django/GraphQL/Relay stack and relies on a ChatGPT Python client to create the contextual thought.
 
 Mnemo will be accessible via a React web front-end.

@@ -8,7 +8,7 @@ from gpt_api.service import GptService
 '''
 Return AI generated first-person POV diary entry based on the current events related to the search term name_prompt
 '''
-def get_diary_entry(name_prompt):
+async def fetch_diary_entry(name_prompt):
     # TODO: Replace individual resource name and time_frame_days arguments to single 'ResourceSpec' object 
     # that includes optional field 'time_frame_days' and required field 'resource_name'
     google_news_search = SearchResourceService("Google News")
@@ -24,10 +24,9 @@ def get_diary_entry(name_prompt):
 '''
 Returns a set of relevant images related to the search term name_prompt
 '''
-def get_images(name_prompt):
+async def fetch_entity_images(name_prompt):
     yahoo_images_search = SearchResourceService("Yahoo Images")
-    images = yahoo_images_search.fetch_and_parse_images(name_prompt)
-    images_list = list(images)
+    images_list = list(yahoo_images_search.fetch_and_parse_images(name_prompt))
     return images_list
 
 def __print_google_news_stories(html_content):

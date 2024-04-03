@@ -11,3 +11,17 @@ def test_yahoo_images_parser():
     parser = YahooImagesParser(ExampleHtmlSnippet.images_html)
     images_result = list(parser.get_images())
     assert images_result == TEST_PARSE_IMAGES_RESULT
+
+def test_yahoo_images_parser_no_images():
+    parser = YahooImagesParser('')
+    paragraphs_result = list(parser.get_images())
+    assert paragraphs_result == []
+
+def test_google_news_parser_none():
+    paragraphs_result = []
+    try:
+        parser = YahooImagesParser(None)
+        paragraphs_result = list(parser.get_images())
+        assert False
+    except:
+        assert paragraphs_result == []

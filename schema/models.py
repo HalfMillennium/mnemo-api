@@ -23,7 +23,6 @@ class ImageType(DjangoObjectType):
 DiaryEntry
 - Has Many-to-Many relationship with Image
 '''
-
 class DiaryEntry(models.Model):
     entity_name = models.CharField(max_length=100, primary_key=True)
     date = models.CharField(max_length=100)

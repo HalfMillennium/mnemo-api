@@ -2,26 +2,7 @@ import graphene
 from graphene import relay
 from graphql_relay import from_global_id
 from .models import Image, ImageType, DiaryEntry, DiaryEntryType
-from ..service.servce import MnemoService
-'''
-class Query(graphene.ObjectType):
-    all_images = graphene.List(ImageType)
-    all_diary_entries = graphene.List(DiaryEntryType)
-    diary_entry_from_name = graphene.Field(DiaryEntryType, name=graphene.String(required=True))
-
-    def resolve_all_images(root, info):
-        return Image.objects.all()
-
-    def resolve_all_diary_entries(root, info):
-        return DiaryEntry.objects.all()
-
-    def resolve_diary_entry_from_name(root, info, name):
-        try:
-            return DiaryEntry.objects.get(name=name)
-        except:
-            # instead, generate a new diary entry
-            return None
-'''
+from ..core.service import MnemoService
 
 class CreateDiaryEntryMutation(relay.ClientIDMutation):
     class Input:
@@ -35,7 +16,7 @@ class CreateDiaryEntryMutation(relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, entity_name, date, id):
 
-        diary_entry = DiaryEntry.objects.get(name, date)
+        diary_entry = DiaryEntry.objects.get(entity_name, date)
 
         if(not diary_entry):
             '''
@@ -44,7 +25,7 @@ class CreateDiaryEntryMutation(relay.ClientIDMutation):
             '''
             mnemo_service = MnemoService()
             content = mnemo_service.fetch_diary_entry(entity_name)
-            return CreateDiaryEntryMutation(diary_entry=diary_entry)
+            return CreateDiaryEntryMutation(diary_entry=content)
 
         return CreateDiaryEntryMutation(diary_entry)
 
@@ -72,4 +53,4 @@ class Mutation(graphene.ObjectType):
     create_diary_entry = CreateDiaryEntryMutation.Field()
     create_image_set = CreateEntityImageSetMutation.Field()
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(mutation=Mutation)

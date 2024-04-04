@@ -29,6 +29,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         bio_content = Image.objects.filter(entity_name=entity_name, date_month=current_date)
         if(bio_content):
             return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
+        # Otherwise generate new bio content (including images and summary)
         images_list = mnemo_service.fetch_entity_images(entity_name)
         image_objects = []
         for img_data in images_list:

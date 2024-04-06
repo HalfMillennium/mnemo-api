@@ -6,6 +6,9 @@ Image
 - Should have Many-to-Many relationship with DiaryEntry
 '''
 class Image(models.Model):
+    class Meta:
+        app_label = 'core'
+
     entity_name = models.TextField()
     date_month = models.CharField(max_length=50)
     src = models.TextField()

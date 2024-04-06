@@ -1,6 +1,5 @@
 from django.db import models
 from graphene_django import DjangoObjectType
-from .diary_entry import DiaryEntry
 from .image import Image
 
 '''
@@ -9,8 +8,11 @@ BioContent
 - Has Many-to-Many relationship with Image
 '''
 class BioContent(models.Model):
+    class Meta:
+        app_label = 'core'
+
     entity_name = models.CharField(max_length=100, primary_key=True)
-    diary_entry = models.OneToOneField(DiaryEntry, on_delete=models.CASCADE)
+    diary_entry = models.OneToOneField('core.DiaryEntry', on_delete=models.CASCADE)
     entity_summary = models.TextField()
     # Field is blank because it is optional
     images = models.ManyToManyField(Image, blank=True)

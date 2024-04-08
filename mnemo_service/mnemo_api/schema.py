@@ -3,9 +3,11 @@ from graphene import relay
 import random
 from datetime import date
 from graphql_relay import from_global_id
-from mnemo_api.models.image import Image, ImageType
-from mnemo_api.models.diary_entry import DiaryEntry, DiaryEntryType
-from mnemo_api.models.bio_content import BioContent, BioContentType
+from mnemo_api.models.image import Image
+from mnemo_api.models.diary_entry import DiaryEntry
+from mnemo_api.models.types.diary_entry_type import DiaryEntryType
+from mnemo_api.models.types.bio_content_type import BioContentType
+from mnemo_api.models.bio_content import BioContent
 from mnemo_api.mnemo_logic.server import MnemoService
     
 class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
@@ -18,6 +20,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, entity_name):
         current_date = date.today().strftime('%Y-%m-%d')
+        current_date_month = current_date[:7]
         mnemo_service = MnemoService()
         diary_entry = DiaryEntry.objects.filter(entity_name=entity_name, date=current_date)
         if(not diary_entry):
@@ -33,7 +36,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         images_list = mnemo_service.fetch_entity_images(entity_name)
         image_objects = []
         for img_data in images_list:
-            image = Image.objects.create(entity_name, date_month=current_date, src=img_data["src"], alt=img_data["alt"])
+            image = Image.objects.create(entity_name, date_month=current_date_month, src=img_data["src"], alt=img_data["alt"])
             image_objects.append(image)
         summary = mnemo_service.fetch_entity_summary(entity_name)
         bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, images=image_objects, diary_entry=diary_entry)
@@ -44,6 +47,7 @@ class Mutation(graphene.ObjectType):
     create_diary_entry_and_bio_content = CreateDiaryEntryAndBioContentMutation.Field()
 
 class Query(graphene.ObjectType):
-    all_images = graphene.List(ImageType)
+    all_diary_entry = graphene.List(DiaryEntryType)
+    all_bio_content = graphene.List(BioContentType)
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

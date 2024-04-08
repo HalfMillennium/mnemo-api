@@ -1,5 +1,4 @@
 from django.db import models
-from graphene_django import DjangoObjectType
 from .image import Image
 
 '''
@@ -12,7 +11,7 @@ class BioContent(models.Model):
         app_label = 'mnemo_api'
 
     entity_name = models.CharField(max_length=100, primary_key=True)
-    diary_entry = models.OneToOneField('mnemo_api.DiaryEntry', on_delete=models.CASCADE)
+    diary_entry = models.ForeignKey('mnemo_api.DiaryEntry', on_delete=models.CASCADE, null=True, blank=True)
     entity_summary = models.TextField()
     # Field is blank because it is optional
     images = models.ManyToManyField(Image, blank=True)
@@ -20,8 +19,3 @@ class BioContent(models.Model):
 
     def __str__(self):
         return f'{self.entity_name} : {self.entity_summary}'
-    
-class BioContentType(DjangoObjectType):
-    class Meta:
-        model = BioContent
-        fields = ("entity_name", "diary_entry", "entity_summary", "images", "date_month")

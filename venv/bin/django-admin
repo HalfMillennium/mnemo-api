@@ -1,4 +1,4 @@
-#!/Users/montserrat/Documents/Projects/mnemo-api/venv/bin/python3.11
+#!/Users/montserrat/Documents/Projects/mnemo-api-3/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

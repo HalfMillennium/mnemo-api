@@ -10,7 +10,6 @@ from mnemo_api.models.types.diary_entry_type import DiaryEntryType
 from mnemo_api.models.types.bio_content_type import BioContentType
 from mnemo_api.models.bio_content import BioContent
 from mnemo_api.mnemo_logic.server import MnemoService
-import asyncio
     
 class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     class Input:
@@ -34,7 +33,11 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
 
         bio_content = BioContent.objects.filter(entity_name=entity_name, date_month=current_date_month).first()
         if(bio_content):
+            if(diary_entry.bio_content is None):
+                diary_entry.bio_content = bio_content
+            diary_entry.save()
             return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
+        
         # Otherwise generate new bio content (including images and summary)
         images_list = run(mnemo_service.fetch_entity_images(entity_name))
         image_objects = []

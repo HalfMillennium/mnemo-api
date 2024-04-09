@@ -54,7 +54,13 @@ class Mutation(graphene.ObjectType):
     create_diary_entry_and_bio_content = CreateDiaryEntryAndBioContentMutation.Field()
 
 class Query(graphene.ObjectType):
-    all_diary_entry = graphene.List(DiaryEntryType)
-    all_bio_content = graphene.List(BioContentType)
+    all_diary_entries = graphene.List(DiaryEntryType)
+    all_bio_contents = graphene.List(BioContentType)
+
+    def resolve_all_diary_entries(self, info):
+        return DiaryEntry.objects.all()
+
+    def resolve_all_bio_contents(self, info):
+        return BioContent.objects.all()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

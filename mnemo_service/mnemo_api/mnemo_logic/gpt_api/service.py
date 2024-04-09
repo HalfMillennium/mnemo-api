@@ -29,7 +29,7 @@ class GptService:
         if prompt: 
             messages.append( 
                 {"role": "user", "content": prompt}, 
-            ) 
+            )
             chat = openai.ChatCompletion.create( 
                 model="gpt-3.5-turbo", messages=messages 
             )

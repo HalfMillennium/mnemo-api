@@ -11,7 +11,7 @@ class BioContent(models.Model):
         app_label = 'mnemo_api'
 
     entity_name = models.CharField(max_length=100, primary_key=True)
-    diary_entry = models.ForeignKey('mnemo_api.DiaryEntry', on_delete=models.CASCADE, null=True, blank=True)
+    diary_entry = models.OneToOneField('mnemo_api.DiaryEntry', on_delete=models.CASCADE, null=True, blank=True)
     entity_summary = models.TextField()
     # Field is blank because it is optional
     images = models.ManyToManyField(Image, blank=True)

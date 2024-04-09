@@ -22,24 +22,25 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         current_date = date.today().strftime('%Y-%m-%d')
         current_date_month = current_date[:7]
         mnemo_service = MnemoService()
-        diary_entry = DiaryEntry.objects.filter(entity_name=entity_name, date=current_date)
+        diary_entry = DiaryEntry.objects.filter(entity_name=entity_name, date=current_date).first()
         if(not diary_entry):
             # Otherwise generate new entry
             content = mnemo_service.fetch_diary_entry(entity_name)
             random_time_of_day = f'{random.randint(0, 23)}:{random.randint(0, 59)} EST'
             diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=random_time_of_day, content=content)
 
-        bio_content = Image.objects.filter(entity_name=entity_name, date_month=current_date)
+        bio_content = BioContent.objects.filter(entity_name=entity_name, date_month=current_date_month).first()
         if(bio_content):
             return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
         # Otherwise generate new bio content (including images and summary)
         images_list = mnemo_service.fetch_entity_images(entity_name)
         image_objects = []
         for img_data in images_list:
-            image = Image.objects.create(entity_name, date_month=current_date_month, src=img_data["src"], alt=img_data["alt"])
+            image = Image.objects.create(entity_name=entity_name, date_month=current_date_month, src=img_data["src"], alt=img_data["alt"])
             image_objects.append(image)
         summary = mnemo_service.fetch_entity_summary(entity_name)
-        bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, images=image_objects, diary_entry=diary_entry)
+        bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, diary_entry=diary_entry, date_month=current_date_month)
+        bio_content.images.add(*image_objects)
 
         return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
 

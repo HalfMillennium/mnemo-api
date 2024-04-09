@@ -8,7 +8,7 @@ class Image(models.Model):
     class Meta:
         app_label = 'mnemo_api'
 
-    entity_name = models.TextField()
+    entity_name = models.CharField(max_length=100)
     date_month = models.CharField(max_length=50)
     src = models.TextField()
     alt = models.TextField()

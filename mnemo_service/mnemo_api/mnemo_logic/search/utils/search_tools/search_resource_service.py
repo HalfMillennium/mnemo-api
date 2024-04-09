@@ -29,16 +29,13 @@ class SearchResourceService:
         return result
 
     async def __fetch_page_content(self, url) -> str:
-        # Create a list of URLs to request asynchronously
-        urls = [url]
-        # Use requests.map to perform the asynchronous request
-        response = requests.map((requests.get(u) for u in urls))
-        return self.parse_response(response)
+        response = requests.get(url)
+        return response.text
 
     async def fetch_and_parse_images(self, search_term, alt = None, resource_name = "Yahoo Images"):
         page_html = await self.execute_query(search_term)
         yahoo_images_parser = PageParserService(resource_name, page_html)
-        images = yahoo_images_parser.get_images(alt) # { src: string, alt: string | None }[]
+        images = yahoo_images_parser.get_images() # { src: string, alt: string | None }[]
         return images
 
     '''

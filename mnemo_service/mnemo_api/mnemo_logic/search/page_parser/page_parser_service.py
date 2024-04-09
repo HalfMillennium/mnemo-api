@@ -21,5 +21,5 @@ class PageParserService:
     def get_images(self, alt = None):
         if(self.resource != "Yahoo Images"):
             raise Exception(f'{self.resource} does not implement \'get_images()\' method.')
-        return self.parser.get_images(alt)
+        return self.parser.get_images()
     

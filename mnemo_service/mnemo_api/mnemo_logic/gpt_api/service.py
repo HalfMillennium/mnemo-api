@@ -49,7 +49,8 @@ class GptService:
             f"about recent news stories pertaining to {entity_name}, "
             f"write a {word_count}-word diary entry, detailing their perspective "
             f"on the events, in a first-person perspective. Here are the stories: [{stories_list}]. "
-            f"The diary entry should be funny and cynical. "
+            f"The diary entry should be genuinely funny to read, and slightly cyncial. It should be in first-person perspective "
+            f"and reflect the entity's personality and emotions.  The tone should be conversational and relatable. "
             f"Include links to relevant articles next to keywords, if possible. "
             f"The words in the links are not included in the {word_count}-word maximum."
         )

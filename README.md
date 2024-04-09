@@ -1,5 +1,11 @@
-# Mnemo API
-## A Python service
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#mnemo-api)
+
+# ➤ Mnemo API
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#a-python-service)
+
+## ➤ A Python service
 
 _Mnemo_ is a python API that fetches real-world data about any given public figure, and researches a given public figure, views relevant current events involving them, then uses AI to generate a daily diary entry based on the public goings on of their lives.
 

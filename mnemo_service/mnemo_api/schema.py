@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 import random
-from datetime import date
+from datetime import date, datetime
 from asyncio import run
 from graphql_relay import from_global_id
 from mnemo_api.models.image import Image
@@ -28,7 +28,9 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
             # Otherwise generate new entry
             content = run(mnemo_service.fetch_diary_entry(entity_name))
 
-            random_time_of_day = f'{random.randint(0, 23)}:{random.randint(10, 59)} EST'
+            current_time = datetime.now()
+            random_time_of_day = f'{random.randint(0, current_time.hour)}:{random.randint(0, current_time.minute if current_time.hour == current_time.hour else 59)} EST'
+            
             diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=random_time_of_day, content=content)
 
         bio_content = BioContent.objects.filter(entity_name=entity_name, date_month=current_date_month).first()

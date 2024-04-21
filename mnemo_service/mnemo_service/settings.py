@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-x9ap03y@_$eiolwp0y(!=&=20%ii=i=dq4z7kr+&n-5!^isuet
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] # For development purposes, we allow all hosts
 
 
 # Application definition
@@ -75,22 +75,13 @@ WSGI_APPLICATION = 'mnemo_service.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-''' sqlite
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-'''
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mnemo',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postie',
-        'HOST': 'localhost',
+        'HOST': 'my-postgres',
         'PORT': '5432',
     }
 }

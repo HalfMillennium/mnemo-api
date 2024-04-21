@@ -9,7 +9,7 @@ DEFAULT_SUMMARY_WORD_COUNT = 100
 class GptService:
     def __init__(self):
         load_dotenv()
-        self.OPEN_AI_KEY = os.getenv('OPEN_AI_KEY')
+        self.OPEN_AI_KEY = os.getenv('OPENAI_API_KEY')
         openai.api_key = self.OPEN_AI_KEY
     
     async def generate_diary_entry(self, stories, entity_name, word_count = DEFAULT_DIARY_ENTRY_WORD_COUNT) -> str:

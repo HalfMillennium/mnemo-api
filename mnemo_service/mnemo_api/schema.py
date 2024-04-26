@@ -1,5 +1,6 @@
 import graphene
 from graphene import relay
+from django.db import transaction
 import random
 from datetime import date, datetime
 from asyncio import run
@@ -10,7 +11,13 @@ from mnemo_api.models.types.diary_entry_type import DiaryEntryType
 from mnemo_api.models.types.bio_content_type import BioContentType
 from mnemo_api.models.bio_content import BioContent
 from mnemo_api.mnemo_logic.server import MnemoService
-    
+
+'''
+Creates a new diary entry and bio content for the given entity name. 
+
+If the diary entry already exists, it will be returned. 
+If the bio content already exists, it will be returned and associated with the diary entry.
+'''
 class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     class Input:
         entity_name = graphene.String(required=True)
@@ -19,6 +26,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     bio_content = graphene.Field(BioContentType)
 
     @classmethod
+    @transaction.atomic
     def mutate_and_get_payload(cls, root, info, entity_name):
         current_date = date.today().strftime('%Y-%m-%d')
         current_date_month = current_date[:7]
@@ -37,6 +45,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         if(bio_content):
             if(diary_entry.bio_content is None):
                 diary_entry.bio_content = bio_content
+            diary_entry.increment_access_count()
             diary_entry.save()
             return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
         
@@ -48,7 +57,9 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
             image_objects.append(image)
         summary = run(mnemo_service.fetch_entity_summary(entity_name))
         bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, diary_entry=diary_entry, date_month=current_date_month)
+        
         bio_content.images.add(*image_objects)
+        diary_entry.bio_content = bio_content
 
         return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
 

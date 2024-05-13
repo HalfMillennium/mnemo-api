@@ -51,7 +51,7 @@ class GptService:
             f"on the events, in a first-person perspective. Here are the stories: [{stories_list}]. "
             f"The diary entry should have a very humorous and slightly cynical tone. It should be in first-person perspective from the point of view of the entity '{entity_name}'."
             f"and reflect the entity's personality and emotions.  The tone should be conversational and relatable. "
-            f"Include links to relevant articles next to keywords, if possible. "
-            f"The words in the links are not included in the {word_count}-word maximum."
+            f"Include the names of sources at the end of the diary entry, if possible. "
+            f"The names of the sources are not included in the {word_count}-word maximum."
         )
         return diary_prompt

@@ -1,6 +1,7 @@
 import graphene
 from graphene import relay
 import random
+from django.db import transaction
 from datetime import date, datetime
 from asyncio import run
 from graphql_relay import from_global_id
@@ -50,10 +51,17 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         summary = run(mnemo_service.fetch_entity_summary(entity_name))
         bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, diary_entry=diary_entry, date_month=current_date_month)
         bio_content.images.add(*image_objects)
+        diary_entry.bio_content = bio_content
+        diary_entry.save()
 
         return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
     
 class DeleteDiaryEntryMutation(relay.ClientIDMutation):
+    class Input:
+        entity_name = graphene.String(required=True)
+
+    @classmethod
+    @transaction.atomic
     def mutate_and_get_payload(cls, root, info, entity_name):
         entry = DiaryEntry.objects.filter(entity_name=entity_name).first()
         if(entry):

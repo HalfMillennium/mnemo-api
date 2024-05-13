@@ -19,6 +19,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     bio_content = graphene.Field(BioContentType)
 
     @classmethod
+    @transaction.atomic
     def mutate_and_get_payload(cls, root, info, entity_name):
         current_date = date.today().strftime('%Y-%m-%d')
         current_date_month = current_date[:7]
@@ -51,6 +52,13 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         bio_content.images.add(*image_objects)
 
         return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
+    
+class DeleteDiaryEntryMutation(relay.ClientIDMutation):
+    def mutate_and_get_payload(cls, root, info, entity_name):
+        entry = DiaryEntry.objects.filter(entity_name=entity_name).first()
+        if(entry):
+            entry.delete()
+        return DeleteDiaryEntryMutation()
 
 class Mutation(graphene.ObjectType):
     create_diary_entry_and_bio_content = CreateDiaryEntryAndBioContentMutation.Field()

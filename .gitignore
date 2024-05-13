@@ -1,2 +1,2 @@
 /.env
-/mnemo_service/mnemo_service/settings.py
+mnemo_service/mnemo_service/settings.py

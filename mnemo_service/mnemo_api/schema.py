@@ -15,13 +15,14 @@ from mnemo_api.mnemo_logic.server import MnemoService
 class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     class Input:
         entity_name = graphene.String(required=True)
+        time_of_writing = graphene.String(required=True)
 
     diary_entry = graphene.Field(DiaryEntryType)
     bio_content = graphene.Field(BioContentType)
 
     @classmethod
     @transaction.atomic
-    def mutate_and_get_payload(cls, root, info, entity_name):
+    def mutate_and_get_payload(cls, root, info, entity_name, time_of_writing):
         current_date = date.today().strftime('%Y-%m-%d')
         current_date_month = current_date[:7]
         mnemo_service = MnemoService()
@@ -29,11 +30,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         if(not diary_entry):
             # Otherwise generate new entry
             content = run(mnemo_service.fetch_diary_entry(entity_name))
-
-            current_time = datetime.now()
-            random_time_of_day = f'{random.randint(0, current_time.hour)}:{random.randint(0, current_time.minute if current_time.hour == current_time.hour else 59)} EST'
-            
-            diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=random_time_of_day, content=content)
+            diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=time_of_writing, content=content)
 
         bio_content = BioContent.objects.filter(entity_name=entity_name, date_month=current_date_month).first()
         if(bio_content):

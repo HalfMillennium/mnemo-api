@@ -12,9 +12,10 @@ class CreateDiaryEntryAndBioContentMutationTest(TestCase):
     def test_create_diary_entry_and_bio_content(self):
         # Arrange
         entity_name = 'test_entity'
+        time_of_writing = 'random_time'
         mutation = f'''
         mutation {{
-            createDiaryEntryAndBioContent(input: {{entityName: "{entity_name}"}}) {{
+            createDiaryEntryAndBioContent(input: {{entityName: "{entity_name}", time_of_writing: "{time_of_writing}"}}) {{
                 diaryEntry {{
                     entityName
                     date

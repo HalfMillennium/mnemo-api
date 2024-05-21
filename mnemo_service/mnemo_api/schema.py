@@ -1,7 +1,8 @@
 import graphene
 from graphene import relay
 import random
-from datetime import date
+from django.db import transaction
+from datetime import date, datetime
 from asyncio import run
 from graphql_relay import from_global_id
 from mnemo_api.models.image import Image
@@ -14,12 +15,14 @@ from mnemo_api.mnemo_logic.server import MnemoService
 class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
     class Input:
         entity_name = graphene.String(required=True)
+        time_of_writing = graphene.String(required=True)
 
     diary_entry = graphene.Field(DiaryEntryType)
     bio_content = graphene.Field(BioContentType)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, entity_name):
+    @transaction.atomic
+    def mutate_and_get_payload(cls, root, info, entity_name, time_of_writing):
         current_date = date.today().strftime('%Y-%m-%d')
         current_date_month = current_date[:7]
         mnemo_service = MnemoService()
@@ -27,9 +30,7 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         if(not diary_entry):
             # Otherwise generate new entry
             content = run(mnemo_service.fetch_diary_entry(entity_name))
-
-            random_time_of_day = f'{random.randint(0, 23)}:{random.randint(10, 59)} EST'
-            diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=random_time_of_day, content=content)
+            diary_entry = DiaryEntry.objects.create(entity_name=entity_name, date=current_date, time=time_of_writing, content=content)
 
         bio_content = BioContent.objects.filter(entity_name=entity_name, date_month=current_date_month).first()
         if(bio_content):
@@ -47,8 +48,22 @@ class CreateDiaryEntryAndBioContentMutation(relay.ClientIDMutation):
         summary = run(mnemo_service.fetch_entity_summary(entity_name))
         bio_content = BioContent.objects.create(entity_name=entity_name, entity_summary=summary, diary_entry=diary_entry, date_month=current_date_month)
         bio_content.images.add(*image_objects)
+        diary_entry.bio_content = bio_content
+        diary_entry.save()
 
         return CreateDiaryEntryAndBioContentMutation(diary_entry=diary_entry, bio_content=bio_content)
+    
+class DeleteDiaryEntryMutation(relay.ClientIDMutation):
+    class Input:
+        entity_name = graphene.String(required=True)
+
+    @classmethod
+    @transaction.atomic
+    def mutate_and_get_payload(cls, root, info, entity_name):
+        entry = DiaryEntry.objects.filter(entity_name=entity_name).first()
+        if(entry):
+            entry.delete()
+        return DeleteDiaryEntryMutation()
 
 class Mutation(graphene.ObjectType):
     create_diary_entry_and_bio_content = CreateDiaryEntryAndBioContentMutation.Field()

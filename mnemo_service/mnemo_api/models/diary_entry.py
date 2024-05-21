@@ -10,7 +10,7 @@ class DiaryEntry(models.Model):
 
     entity_name = models.CharField(max_length=100, primary_key=True)
     date = models.CharField(max_length=100)
-    time = models.CharField(max_length=100)
+    time = models.CharField(max_length=100, null=True, blank=True)
     content = models.TextField()
     bio_content = models.OneToOneField('mnemo_api.BioContent', on_delete=models.CASCADE, null=True, blank=True)
 

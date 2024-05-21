@@ -1,5 +1,4 @@
 from ..search_resources import WikiSearchResource, GoogleNewsSearchResource, YahooImagesSearchResource, AskRedditSearchResource
-from ..utils import get_prior_and_current_date
 
 EXAMPLE_PROMPT = "hello_world"
 

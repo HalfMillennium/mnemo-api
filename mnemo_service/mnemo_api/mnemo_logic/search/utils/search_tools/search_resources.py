@@ -1,10 +1,7 @@
 '''
 File containing all SearchResource classes
 '''
-from datetime import datetime, timedelta
 from ...utils.search_tools.types.search_resource import SearchResource
-from ...page_parser.page_parser_service import PageParserService
-from .utils import get_prior_and_current_date
 
 class GoogleNewsSearchResource(SearchResource):
     BASE_URL = "https://news.google.com/search"

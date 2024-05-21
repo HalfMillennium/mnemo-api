@@ -1,2 +1,3 @@
 /.env
-mnemo_service/mnemo_service/settings.py
+mnemo_service/Dockerfile
+mnemo_service/docker-compose.yml
